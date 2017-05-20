@@ -84,16 +84,19 @@ public class Main {
          *
          * @param a the array to be sorted
          */
-        Arrays.sort(arr);
+        if (k > 100_000)
+            Arrays.sort(arr);
+        else {
+            BinaryHeap binaryHeap = new Main().new BinaryHeap(arr);
+            // sort array. O(N log N)
+            arr = binaryHeap.heapSort();
+        }
+
         // PriorityQueue doesn't approach since doesn't provide access to elements by index
 
         // print unsorted array
         //printArray(arr);
 
-        BinaryHeap binaryHeap = new Main().new BinaryHeap(arr);
-
-        // sort array. O(N log N)
-        arr = binaryHeap.heapSort();
 
         // print sorted array (for testing result)
         printArray(arr);
