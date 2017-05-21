@@ -72,12 +72,14 @@ public class Main {
 
     private static int getIdx(int arraySize) {
         int idx = 0;
+        boolean b = true;
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
-            while (idx <= 0) {
+            while (b) {
                 System.out.printf("Input index of array cell (1 <= index <= %d): ", arraySize);
                 try {
                     idx = Integer.parseInt(br.readLine());
-                    if (idx <= 0) throw new Exception();
+                    b = idx < 1 || idx > arraySize;
+                    if (b) throw new Exception();
                 } catch (Exception e) {
                     System.out.println("Illegal number format. Please try again.");
                 }
@@ -89,7 +91,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        // set random array size
+        // set random array size (up to 200000 cells)
         int arraySize = 1;
         while (arraySize <= 1)
             arraySize = new Random().nextInt(200_000);
