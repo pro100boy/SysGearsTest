@@ -93,8 +93,8 @@ public class Main {
     public static void main(String[] args) {
         int n = getNumber();
 
-        System.out.println(String.format("sqrt = %d", isqrt1(n)));
-        System.out.println(String.format("sqrt = %d", isqrt2(n)));
+        //System.out.println(String.format("sqrt = %d", isqrt1(n)));
+        //System.out.println(String.format("sqrt = %d", isqrt2(n)));
         System.out.println(String.format("sqrt = %d", my_sqrt(n)));
     }
 }
