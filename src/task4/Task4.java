@@ -15,6 +15,7 @@ public class Task4 {
         for (int i = 0; i < array.length; i++) {
             array[i].print();
         }
+        System.out.println();
 
         //find conventional center
         Point[] centerArray = findCenterMovePoints(array);
@@ -23,6 +24,7 @@ public class Task4 {
         for (int i = 0; i < array.length; i++) {
             array[i].print();
         }
+        System.out.println();
 
     }
     /**
@@ -49,7 +51,7 @@ public class Task4 {
             centerArray[k].setAngle(100.0);
             minAngle = 100;
         }
-        System.out.print("BLA");
+        System.out.println("BLA");
         //Move points back to their place
         for (int i = 0; i < res.length; i++) {
             Point p = new Point(res[i].x + MID_X, res[i].y + MID_Y);
@@ -65,7 +67,7 @@ public class Task4 {
      */
     static double polarAngle(Point p) {
         double alpha = Math.atan2(p.y, p.x);
-        if (alpha < 0) alpha += 2 * 3.14;
+        if (alpha < 0) alpha += 2 * Math.PI;
         return alpha;
     }
 
