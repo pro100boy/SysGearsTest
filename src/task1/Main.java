@@ -1,18 +1,43 @@
 package task1;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class Main {
 
-    static double EPS = 1e-10;
+    private static int getNumber() {
+        int num = 0;
+        boolean b = true;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
+            while (b) {
+                System.out.printf("Input number (0 <= number <= %d): ", Integer.MAX_VALUE);
+                try {
+                    num = Integer.parseInt(br.readLine());
+                    b = num < 0 || num > Integer.MAX_VALUE;
+                    if (b) throw new Exception();
+                } catch (Exception e) {
+                    System.out.println("Illegal number format. Please try again.");
+                }
+            }
+        } catch (IOException e) {
+        }
 
-    private static double my_sqrt(double x) {
-        double S = x, a = 1, b = x;
+        return num;
+    }
+
+    // https://habrahabr.ru/post/128468/
+    private static int my_sqrt(double x) {
+        double S = x, a = 1, b = x, EPS = 1e-10;
         while (Math.abs(a - b) > EPS) {
             a = (a + b) / 2;
             b = S / a;
         }
-        return (a + b) / 2;
+        return (int)((a + b) / 2);
     }
 
+    // Newton’s Method
+    // Hacker’s Delight. Second Edition. ISBN-13: 978-0-321-84268-8, Chapter 11
     private static int isqrt1(int x) {
         int x1;
         int s, g0, g1;
@@ -46,7 +71,8 @@ public class Main {
         return g0;
     }
 
-    // Hardware algorithm [GLS]
+    // A Hardware Algorithm
+    // Hacker’s Delight. Second Edition. ISBN-13: 978-0-321-84268-8, Chapter 11
     private static int isqrt2(int x) {
         int m, y, b;
 
@@ -65,19 +91,10 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        int n = 28;
+        int n = getNumber();
 
-        System.out.println("isqrt1:");
-        for (int i = 0; i <= n; i++)
-            System.out.println(String.format("i = %d, sqrt = %d", i, isqrt1(i)));
-
-        System.out.println("\nisqrt2:");
-        for (int i = 0; i <= n; i++)
-            System.out.println(String.format("i = %d, sqrt = %d", i, isqrt2(i)));
-
-        System.out.println("\nmy_sqrt:");
-        for (int i = 0; i <= n; i++)
-            System.out.println(String.format("i = %d, sqrt = %f", i, my_sqrt(i)));
-
+        System.out.println(String.format("sqrt = %d", isqrt1(n)));
+        System.out.println(String.format("sqrt = %d", isqrt2(n)));
+        System.out.println(String.format("sqrt = %d", my_sqrt(n)));
     }
 }
