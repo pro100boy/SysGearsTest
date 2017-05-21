@@ -1,5 +1,8 @@
 package task2;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -67,40 +70,64 @@ public class Main {
                 .collect(Collectors.joining(" ")));
     }
 
+    private static int getIdx(int arraySize) {
+        int idx = 0;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
+            while (idx <= 0) {
+                System.out.printf("Input index of array cell (1 <= index <= %d): ", arraySize);
+                try {
+                    idx = Integer.parseInt(br.readLine());
+                    if (idx <= 0) throw new Exception();
+                } catch (Exception e) {
+                    System.out.println("Illegal number format. Please try again.");
+                }
+            }
+        } catch (IOException e) {
+        }
+
+        return idx;
+    }
+
     public static void main(String[] args) {
-        int arraySize = 20;
-        int low = 0, high = 100;
-        int k = 4;
+        // set random array size
+        int arraySize = 1;
+        while (arraySize <= 1)
+            arraySize = new Random().nextInt(200_000);
+
+        // input index of the defined element
+        int k = getIdx(arraySize);
+
+        // bounds of array values: from low (inclusive) to high (exclusive)
+        int
+                low = 0,
+                high = 1_000;
+
+        // initialize array
         int[] arr = new Random().ints(arraySize, low, high).toArray();
 
+        // print unsorted array
+        // printArray(arr);
+
         /**
-         * Sorts the specified array into ascending numerical order.
+         * PriorityQueue doesn't approach since doesn't provide access to elements by index
          *
-         * <p>Implementation note: The sorting algorithm is a Dual-Pivot Quicksort
-         * by Vladimir Yaroslavskiy, Jon Bentley, and Joshua Bloch. This algorithm
-         * offers O(n log(n)) performance on many data sets that cause other
-         * quicksorts to degrade to quadratic performance, and is typically
-         * faster than traditional (one-pivot) Quicksort implementations.
-         *
-         * @param a the array to be sorted
+         * Review and testing sort methods
+         * http://info.javarush.ru/EvIv/2014/11/28/%D0%9E%D0%B1%D0%B7%D0%BE%D1%80-%D0%B8-%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4%D0%BE%D0%B2-%D1%81%D0%BE%D1%80%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B8-%D0%A7%D0%B0%D1%81%D1%82%D1%8C-I.html
          */
-        if (k > 100_000)
+        if (arraySize > 100_000)
             Arrays.sort(arr);
         else {
             BinaryHeap binaryHeap = new Main().new BinaryHeap(arr);
-            // sort array. O(N log N)
+            /**
+             * https://betterexplained.com/articles/sorting-algorithms/#Heapsort_BestAvgWorst_ON_lg_N
+             * Heapsort has O(N lgN) behavior, even in the worst case, making it good for real-time applications
+             */
             arr = binaryHeap.heapSort();
         }
 
-        // PriorityQueue doesn't approach since doesn't provide access to elements by index
-
-        // print unsorted array
-        //printArray(arr);
-
-
         // print sorted array (for testing result)
-        printArray(arr);
+        // printArray(arr);
 
-        System.out.println("Answer: array[k] = " + arr[k - 1]);
+        System.out.printf("Answer: array[%d] = %d", k, arr[k - 1]);
     }
 }
