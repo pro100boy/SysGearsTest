@@ -11,9 +11,9 @@ public class OctalToAscii {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < octStr.length() - 2; i+=3) {
             // Convert Octal(base8) to decimal(base 10).
-            Integer iOctal = Integer.parseInt(octStr.substring(i, i + 3), 8);
+            int iOctal = Integer.parseInt(octStr.substring(i, i + 3), 8);
             // Cast decimal to its corresponding ASCII value.
-            char cOctal = (char) iOctal.intValue();
+            char cOctal = (char) iOctal;
             stringBuilder.append(cOctal);
         }
         return stringBuilder.toString();
