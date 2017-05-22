@@ -1,5 +1,8 @@
 package task4;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
@@ -18,20 +21,12 @@ import java.util.stream.Collectors;
  * https://cs.stackexchange.com/a/52627
  */
 public class Polygon {
-    private int N;        // number of points in the polygon
-    private Point[] a;    // the points, setting points[0] = points[N]
+    private int n;        // number of points in the polygon
+    private Point[] a;    // the points
 
-    // default buffer = 4
-    public Polygon() {
-        N = 0;
-        a = new Point[4];
-    }
-
-    // double size of array
-    private void resize() {
-        Point[] temp = new Point[2 * N + 1];
-        for (int i = 0; i <= N; i++) temp[i] = a[i];
-        a = temp;
+    public Polygon(int pointsCnt) {
+        this.n = 0;
+        this.a = new Point[pointsCnt];
     }
 
     // is p0->a->b a counter-clockwise turn?
@@ -80,9 +75,7 @@ public class Polygon {
 
     // add point p to end of polygon
     public void add(Point p) {
-        if (N >= a.length - 1) resize();   // resize array if needed
-        a[N++] = p;                        // add point
-        a[N] = a[0];                       // close polygon
+        a[n++] = p;                        // add point
     }
 
     @Override
@@ -95,12 +88,34 @@ public class Polygon {
         }).collect(Collectors.joining(" "));
     }
 
+    private static int inputPointsNum(int maxN) {
+        int pNum = 0;
+        boolean b = true;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
+            while (b) {
+                System.out.printf("Input number of points (3 <= index <= %d): ", maxN);
+                try {
+                    pNum = Integer.parseInt(br.readLine());
+                    b = pNum <= 3 || pNum > maxN;
+                    if (b) throw new Exception();
+                } catch (Exception e) {
+                    System.out.println("Illegal number format. Please try again.");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return pNum;
+    }
+
     public static void main(String[] args) {
-        int N = 20;//Integer.parseInt(args[0]);
+        // inputPointsNum(N): N - max count of points
+        int N = inputPointsNum(100);//Integer.parseInt(args[0]);
 
-        Polygon poly = new Polygon();
+        Polygon poly = new Polygon(N);
 
-        // generate N random points
+        // generate n random points
         for (int i = 0; i < N; i++) {
             int x = (int) (20 * Math.random());
             int y = (int) (20 * Math.random());
