@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * https://cs.stackexchange.com/a/52627
  */
 public class Polygon {
-    private int n;        // number of points in the polygon
+    private int n;        // array index counter
     private Point[] a;    // the points
 
     public Polygon(int pointsCnt) {
@@ -124,7 +124,7 @@ public class Polygon {
         }
 
         // print initial array
-        System.out.println(poly);
+        // System.out.println(poly);
 
         poly.sort();
 
