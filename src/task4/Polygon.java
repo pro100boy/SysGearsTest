@@ -75,7 +75,7 @@ public class Polygon {
 
     // add point p to end of polygon
     public void add(Point p) {
-        a[n++] = p;                        // add point
+        a[n++] = p; // add point
     }
 
     @Override
@@ -88,6 +88,7 @@ public class Polygon {
         }).collect(Collectors.joining(" "));
     }
 
+    // input number of points
     private static int inputPointsNum(int maxN) {
         int pNum = 0;
         boolean b = true;
