@@ -1,16 +1,22 @@
 package task4;
 
-import edu.princeton.cs.algs4.StdOut;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
-/******************************************************************************
- *  Compilation:  javac Polygon.java
- *  Execution:    java Polygon
- *  Dependencies: Point.java
- *
- *  Implementation of 2D polygon, possibly intersecting.
- *
- ******************************************************************************/
-
+/**
+ * Algorithm based on the first half of the Grahm Scan convex hull algorithm,
+ * as detailed here (http://geomalgorithms.com/a10-_hull-1.html).
+ * <p>
+ * The first step of the Grahm Scan is to sort the points in a set based on the angle made with the X axis
+ * when drawing a line through the point and the lower-right point of the set.
+ * <p>
+ * If two or more points form the same angle with the X axis (i.e. are aligned with respect to the reference point)
+ * then those points should be sorted based on distance from the reference point.
+ * <p>
+ * https://cs.stackexchange.com/a/52627
+ */
 public class Polygon {
     private int N;        // number of points in the polygon
     private Point[] a;    // the points, setting points[0] = points[N]
@@ -21,23 +27,56 @@ public class Polygon {
         a = new Point[4];
     }
 
-
     // double size of array
     private void resize() {
-        Point[] temp = new Point[2*N+1];
+        Point[] temp = new Point[2 * N + 1];
         for (int i = 0; i <= N; i++) temp[i] = a[i];
         a = temp;
     }
 
-    // return size
-    public int size() { return N; }
-
-    // draw polygon
-    public void draw() {
-        for (int i = 0; i < N; i++)
-            a[i].drawTo(a[i+1]);
+    // is p0->a->b a counter-clockwise turn?
+    // +1 if counter-clockwise, -1 if clockwise, 0 if collinear
+    private int ccw(Point p0, Point a, Point b) {
+        double area2 = (a.x - p0.x) * (b.y - p0.y) - (b.x - p0.x) * (a.y - p0.y);
+        if (area2 < 0) return -1;
+        else if (area2 > 0) return +1;
+        else return 0;
     }
 
+    private int distCompare(Point p0, Point a, Point b) {
+        int distA = (p0.x - a.x) * (p0.x - a.x) + (p0.y - a.y) * (p0.y - a.y);
+        int distB = (p0.x - b.x) * (p0.x - b.x) + (p0.y - b.y) * (p0.y - b.y);
+        return distA - distB;
+    }
+
+    private int angleCompare(Point p0, Point a, Point b) {
+        int left = ccw(p0, a, b);
+        if (left == 0) return distCompare(p0, a, b);
+        return left;
+    }
+
+    public void sort()
+    {
+        // sort array of points and determine point with min Y coordinate (and max X coordinate among some Y)
+        Comparator<Point> sortByYminXmax = (o1, o2) -> {
+            int res = 0;
+            if (!Objects.isNull(o1) && !Objects.isNull(o2)) {
+                res = Integer.compare(o1.y, o2.y);
+                if (res == 0) res = Integer.compare(o2.x, o1.x);
+            }
+            return res;
+        };
+
+        Comparator<Point> compareByAngle = (o1, o2) -> {
+            int res = 0;
+            if (!Objects.isNull(o1) && !Objects.isNull(o2))
+                res = Polygon.this.angleCompare(a[0], o1, o2);
+            return res;
+        };
+
+        Arrays.sort(a, sortByYminXmax);
+        Arrays.sort(a, compareByAngle);
+    }
 
     // add point p to end of polygon
     public void add(Point p) {
@@ -46,107 +85,34 @@ public class Polygon {
         a[N] = a[0];                       // close polygon
     }
 
-    // return the perimeter
-    public double perimeter() {
-        double sum = 0.0;
-        for (int i = 0; i < N; i++)
-            sum = sum + a[i].distanceTo(a[i+1]);
-        return sum;
-    }
-
-    // return signed area of polygon
-    public double area() {
-        double sum = 0.0;
-        for (int i = 0; i < N; i++) {
-            sum = sum + (a[i].x * a[i+1].y) - (a[i].y * a[i+1].x);
-        }
-        return 0.5 * sum;
-    }
-
-    // does this Polygon contain the point p?
-    // if p is on boundary then 0 or 1 is returned, and p is in exactly one point of every partition of plane
-    // Reference: http://exaflop.org/docs/cgafaq/cga2.html
-    public boolean contains2(Point p) {
-        int crossings = 0;
-        for (int i = 0; i < N; i++) {
-            int j = i + 1;
-            boolean cond1 = (a[i].y <= p.y) && (p.y < a[j].y);
-            boolean cond2 = (a[j].y <= p.y) && (p.y < a[i].y);
-            if (cond1 || cond2) {
-                // need to cast to double
-                if (p.x < (a[j].x - a[i].x) * (p.y - a[i].y) / (a[j].y - a[i].y) + a[i].x)
-                    crossings++;
-            }
-        }
-        if (crossings % 2 == 1) return true;
-        else                    return false;
-    }
-
-    // does this Polygon contain the point p?
-    // Reference: http://softsurfer.com/Archive/algorithm_0103/algorithm_0103.htm
-    public boolean contains(Point p) {
-        int winding = 0;
-        for (int i = 0; i < N; i++) {
-            int ccw = Point.ccw(a[i], a[i+1], p);
-            if (a[i+1].y >  p.y && p.y >= a[i].y)  // upward crossing
-                if (ccw == +1) winding++;
-            if (a[i+1].y <= p.y && p.y <  a[i].y)  // downward crossing
-                if (ccw == -1) winding--;
-        }
-        return winding != 0;
-    }
-
-
-    // return string representation of this point
+    @Override
     public String toString() {
-        if (N == 0) return "[ ]";
-        String s = "";
-        s = s + "[ ";
-        for (int i = 0; i <= N; i++)
-            s = s + a[i] + " ";
-        s = s + "]";
-        return s;
+        return Arrays.stream(a).map(point -> {
+            if (!Objects.isNull(point))
+                return point.toString();
+            else
+                return "";
+        }).collect(Collectors.joining(" "));
     }
 
-
-    // test client
     public static void main(String[] args) {
-        int N = 10;//Integer.parseInt(args[0]);
+        int N = 20;//Integer.parseInt(args[0]);
 
-        // a square
         Polygon poly = new Polygon();
-        poly.add(new Point(5, 5));
-        poly.add(new Point(9, 5));
-        poly.add(new Point(9, 9));
-        poly.add(new Point(5, 9));
 
-        StdOut.println("polygon    = " + poly);
-        StdOut.println("perimeter  = " + poly.perimeter());
-        StdOut.println("area       = " + poly.area());
-
-        StdOut.println("contains(5, 5) = " + poly.contains(new Point(5, 5)));
-        StdOut.println("contains(9, 5) = " + poly.contains(new Point(9, 5)));
-        StdOut.println("contains(9, 9) = " + poly.contains(new Point(9, 9)));
-        StdOut.println("contains(5, 9) = " + poly.contains(new Point(5, 9)));
-        StdOut.println("contains(7, 5) = " + poly.contains(new Point(7, 5)));
-        StdOut.println("contains(5, 7) = " + poly.contains(new Point(5, 7)));
-        StdOut.println("contains(7, 9) = " + poly.contains(new Point(7, 9)));
-        StdOut.println("contains(9, 7) = " + poly.contains(new Point(9, 7)));
-
-        // generate N random points in the unit square and check what fraction are in the polygon
-        int yes = 0;
+        // generate N random points
         for (int i = 0; i < N; i++) {
-            int x = (int) (10 * Math.random());
-            int y = (int) (10 * Math.random());
-            Point p = new Point(x, y);
-            if (poly.contains(p)) yes++;
-            if (poly.contains(p) != poly.contains2(p)) StdOut.println("different " + p);
+            int x = (int) (20 * Math.random());
+            int y = (int) (20 * Math.random());
+            poly.add(new Point(x, y));
         }
 
-        // true answer is = 0.16 (depends on how boundary points are handled)
-        StdOut.println("Fraction in polygon = " + 1.0 * yes / N);
+        // print initial array
+        System.out.println(poly);
 
+        poly.sort();
 
+        // print answer - sorted array
+        System.out.println(poly);
     }
 }
-
