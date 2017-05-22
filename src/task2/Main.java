@@ -110,6 +110,9 @@ public class Main {
         // print unsorted array
         // printArray(arr);
 
+        // start benchmark
+        long start = System.nanoTime();
+
         /**
          * PriorityQueue doesn't approach since doesn't provide access to elements by index
          *
@@ -127,6 +130,7 @@ public class Main {
             arr = binaryHeap.heapSort();
         }
 
+        //System.out.println("Время работы: " + (System.nanoTime() - start));
         // print sorted array (for testing result)
         // printArray(arr);
 
