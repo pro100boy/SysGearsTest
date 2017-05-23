@@ -25,3 +25,6 @@ hs_err_pid*
 
 /.idea/
 out/
+*.csv
+/src/task3/incomingdata.txt
+src/task3/incomingdata.txt
