@@ -88,8 +88,6 @@ public class Polygon {
         }).collect(Collectors.joining(" "));
     }
 
-    // input number of points
-
     /**
      * Input number of points within range from 0 to {@code maxN}
      * @param maxN maximal number of points
