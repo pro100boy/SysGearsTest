@@ -4,8 +4,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * Class for calculation of a square root
+ */
 public class Main {
 
+    /**
+     * Input number for calculation of a square root in range from 0 to {@code Integer.MAX_VALUE}
+     *
+     * @return number for calculation of a square root
+     */
     private static int getNumber() {
         int num = 0;
         boolean b = true;
@@ -21,12 +29,17 @@ public class Main {
                 }
             }
         } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return num;
     }
 
-    // https://habrahabr.ru/post/128468/
+    /**
+     * Evaluation of a square root of {@code double} value.
+     * @param x incoming value, double
+     * @return int value of a square root
+     */
     private static int my_sqrt(double x) {
         double S = x, a = 1, b = x, EPS = 1e-10;
         while (Math.abs(a - b) > EPS) {
@@ -38,6 +51,13 @@ public class Main {
 
     // Newton’s Method
     // Hacker’s Delight. Second Edition. ISBN-13: 978-0-321-84268-8, Chapter 11
+
+    /**
+     * Newton’s Method for calculation of a square root</br>
+     * Hacker’s Delight. Second Edition. ISBN-13: 978-0-321-84268-8, Chapter 11</br>
+     * @param x incoming value, int
+     * @return int value of a square root
+     */
     private static int isqrt1(int x) {
         int x1;
         int s, g0, g1;
@@ -71,8 +91,12 @@ public class Main {
         return g0;
     }
 
-    // A Hardware Algorithm
-    // Hacker’s Delight. Second Edition. ISBN-13: 978-0-321-84268-8, Chapter 11
+    /**
+     * A Hardware Algorithm for calculation of a square root</br>
+     * Hacker’s Delight. Second Edition. ISBN-13: 978-0-321-84268-8, Chapter 11</br>
+     * @param x incoming value, int
+     * @return int value of a square root
+     */
     private static int isqrt2(int x) {
         int m, y, b;
 

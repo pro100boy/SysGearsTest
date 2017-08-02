@@ -50,9 +50,8 @@ public class Polygon {
         return left;
     }
 
-    public void sort()
-    {
-        // sort array of points and determine point with min Y coordinate (and max X coordinate among some Y)
+    public void sort() {
+        // sort array of points and determine point with min Y coordinate (and max X coordinate among same Y)
         Comparator<Point> sortByYminXmax = (o1, o2) -> {
             int res = 0;
             if (!Objects.isNull(o1) && !Objects.isNull(o2)) {
@@ -62,10 +61,11 @@ public class Polygon {
             return res;
         };
 
+        // sort array of points by polar angle
         Comparator<Point> compareByAngle = (o1, o2) -> {
             int res = 0;
             if (!Objects.isNull(o1) && !Objects.isNull(o2))
-                res = Polygon.this.angleCompare(a[0], o1, o2);
+                res = angleCompare(a[0], o1, o2);
             return res;
         };
 
@@ -75,7 +75,7 @@ public class Polygon {
 
     // add point p to end of polygon
     public void add(Point p) {
-        a[n++] = p; // add point
+        a[n++] = p;
     }
 
     @Override
@@ -88,7 +88,11 @@ public class Polygon {
         }).collect(Collectors.joining(" "));
     }
 
-    // input number of points
+    /**
+     * Input number of points within range from 0 to {@code maxN}
+     * @param maxN maximal number of points
+     * @return number of points for polygon
+     */
     private static int inputPointsNum(int maxN) {
         int pNum = 0;
         boolean b = true;

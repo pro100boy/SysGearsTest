@@ -7,10 +7,11 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-/**
- * Created by Galushkin Pavel on 19.05.2017.
- */
 public class Main {
+    /**
+     * A binary heap class is a heap data structure that takes the form of a binary tree. </br>
+     * See <a href="https://en.wikipedia.org/wiki/Binary_heap">https://en.wikipedia.org/wiki/Binary_heap</a>
+     */
     class BinaryHeap {
         private final int[] heap;
         private int heapsize;
@@ -70,6 +71,11 @@ public class Main {
                 .collect(Collectors.joining(" ")));
     }
 
+    /**
+     * Input array index in range from 0 to array size
+     * @param arraySize upper bound of an array
+     * @return array index
+     */
     private static int getIdx(int arraySize) {
         int idx = 0;
         boolean b = true;
@@ -112,7 +118,7 @@ public class Main {
         // printArray(arr);
 
         // start benchmark
-        long start = System.nanoTime();
+        //long start = System.nanoTime();
 
         /**
          * PriorityQueue doesn't approach since doesn't provide access to elements by index

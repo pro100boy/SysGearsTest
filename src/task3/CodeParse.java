@@ -10,11 +10,14 @@ import java.util.stream.Collectors;
  * Created by User on 22.05.2017.
  */
 public class CodeParse {
+    // pattern for decode strings
     private static Pattern ptn = Pattern.compile("^([A-Za-z0-9]{4})[A-Za-z0-9]{0,2}([Rr](d)?(f)?(?:(?<=[df])(?:[0-9]{3})|(?:[0-9]{4}))(?:\\1)?)(?:([+-])(\\d{3}))?(\\d+)[a-zA-Z]{0,2}$");
 
     /**
      * Convert an octal value to its corresponding ASCII value.
      * Convert from octal(base 8)->decimal(base 10)->character.
+     * @param octStr is a String value in octal format
+     * @return String value in ASCII format
      */
     private static String octToASCII(String octStr) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -28,29 +31,26 @@ public class CodeParse {
         return stringBuilder.toString();
     }
 
+    /**
+     * Parsing incoming coded line
+     * @param codeStr coded string
+     * @return required String for CSV file
+     */
     public static String parse(String codeStr) {
         String[] codeParts = new String[7];
         Matcher mtr = ptn.matcher(codeStr);
 
         if (mtr.matches()) {
-            codeParts[0] = codeStr.trim();     // code
-            codeParts[1] = mtr.group(1);    // drive code
-            codeParts[2] = mtr.group(2);    // travel paper
-            if (mtr.group(3) != null) {     // danger
-                codeParts[3] = "true";
-            } else {
-                codeParts[3] = "false";
-            }
-            if (mtr.group(4) != null) {     // ragile
-                codeParts[4] = "true";
-            } else {
-                codeParts[4] = "false";
-            }
-            if (mtr.group(5) != null) {     // temperature
+            codeParts[0] = codeStr.trim();                              // code
+            codeParts[1] = mtr.group(1);                                // drive code
+            codeParts[2] = mtr.group(2);                                // travel paper
+            codeParts[3] = (mtr.group(3) != null) ? "true" : "false";   // danger
+            codeParts[4] = (mtr.group(4) != null) ? "true" : "false";   // fragile
+
+            if (mtr.group(5) != null)                                  // temperature
                 codeParts[5] = mtr.group(5).concat(Integer.toString(Integer.parseInt(mtr.group(6))));
-            }
-            // name
-            codeParts[6] = octToASCII(mtr.group(7));
+
+            codeParts[6] = octToASCII(mtr.group(7));    // name
 
             // build result string
             String res = Arrays.stream(codeParts).map(s -> {
@@ -63,6 +63,8 @@ public class CodeParse {
         }
     }
 
+/*
+    // test data
     public static void main(String[] args) {
         System.out.println(parse("CAZgRf820167151156145"));
         System.out.println(parse("RMuiRdf010160141151156164"));
@@ -79,4 +81,5 @@ public class CodeParse {
         //"qkMfPjrd0561411551551651561511641511571567","qkMf","rd056","true","false",,"ammunition"
         //"EOcTkerf389-0201511431450551431621451411550","EOcT","rf389","false","true","-20","ice-cream"
     }
+    */
 }
