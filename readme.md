@@ -1,0 +1,1 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/91baf431c7624e209742296ea107c866)](https://www.codacy.com/app/gpg/SysGearsTest?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pro100boy/SysGearsTest&amp;utm_campaign=Badge_Grade)
